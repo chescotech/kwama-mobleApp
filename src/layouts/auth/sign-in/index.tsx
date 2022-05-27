@@ -78,7 +78,7 @@ export default ({navigation}): React.ReactElement => {
           Kwama
         </Text>
         <Text category="s1" style={styles.footnote}>
-          powered by Stanbic Bank
+          Powered by Stanbic Bank
         </Text>
       </View>
       <Layout style={styles.formContainer} level="1">

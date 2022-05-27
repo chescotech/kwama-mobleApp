@@ -1,6 +1,6 @@
 import {configureStore} from '@reduxjs/toolkit';
-import {registerSlice} from './reducers/registrationReducer';
+import rootReducers from './reducers/reducers';
 
 export default configureStore({
-  reducer: registerSlice.reducer,
+  reducer: rootReducers,
 });

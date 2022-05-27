@@ -1,4 +1,4 @@
-import React, {ReactElement} from 'react';
+import React, {ReactElement, useReducer} from 'react';
 import {
   View,
   TouchableWithoutFeedback,
@@ -20,15 +20,21 @@ import {
 import PhoneInput from 'react-native-phone-number-input';
 // import PhoneInput from 'react-phone-number-input/react-native-input';
 import moment from 'moment';
+import {Formik} from 'formik';
+import {useDispatch} from 'react-redux';
 import {KeyboardAvoidingView} from './extra/3rd-party';
 import {margin} from '../../../components/config/spacing';
 import Header from '../../../components/header/Header';
-import {Formik} from 'formik';
 import {validatorRegister} from '../../../helpers/Validators';
 
 import languages from '../../../locales';
+import {customerData} from '../../../redux/reducers/UserReducer';
+import UserDefualts from '../../../redux/reducers/UserReducer';
+import {userTempData} from '../../../redux/actions/authActions';
 
-export default ({navigation}): React.ReactElement => {
+export default (props: any): React.ReactElement => {
+  const {navigation} = props;
+
   const t = languages.en;
   const validators = t.validators || {};
   const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false);
@@ -49,18 +55,13 @@ export default ({navigation}): React.ReactElement => {
   const min = new Date(1930, 1, 1);
   const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
+  const dispatch = useDispatch();
+  // const [state, dispatch] = useReducer(customerData, UserDefualts);
+
   const styles = useStyleSheet(themedStyles);
 
   const onSignInButtonPress = (): void => {
     navigation && navigation.navigate('SignIn');
-  };
-
-  const onPhotoButtonPress = (): void => {
-    navigation && navigation.navigate('PhotoId');
-  };
-
-  const onPasswordIconPress = (): void => {
-    setPasswordVisible(!passwordVisible);
   };
 
   const validateDob = (value: any) => {
@@ -84,6 +85,8 @@ export default ({navigation}): React.ReactElement => {
       var allUserData = values;
       allUserData.dob = date;
       allUserData.phone = value;
+
+      dispatch(customerData(allUserData));
 
       navigation && navigation.navigate('PhotoId', {allUserData});
     }
@@ -183,26 +186,15 @@ export default ({navigation}): React.ReactElement => {
                 status={dateErr === '' ? 'basic' : 'danger'}
                 caption={dateErr}
               />
-              {/* <View style={styles.phoneInputContener}>
-                      <Text style={styles.phoneInnerLabel} appearance="hint">
-                        Date of birth
-                      </Text>
-                      <PhoneInput
-                        style={{padding: 5, backgroundColor:'red', width:'60%'}}
-                        defaultCountry="ZM"
-                        value={value}
-                        onChange={setValue}
-                      />
-                      <Icon
-                        style={{width: 26, height: 26, marginTop: 3, marginRight: 10}}
-                        fill="#8F9BB3"
-                        name="calendar-outline"
-                      />
-                    </View> */}
               <Text
                 category={'label'}
-                style={{marginBottom: 0, marginTop: 3, padding: 0, color: '#A0AABE'}}>
-                Phone Number 
+                style={{
+                  marginBottom: 0,
+                  marginTop: 3,
+                  padding: 0,
+                  color: '#A0AABE',
+                }}>
+                Phone Number
               </Text>
               <PhoneInput
                 ref={phoneInput}
