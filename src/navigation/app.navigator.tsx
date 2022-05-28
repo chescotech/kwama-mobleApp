@@ -1,12 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, {useEffect} from 'react';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {AuthNavigator} from './auth.navigator';
-import { useStore } from 'react-redux';
-// import { HomeNavigator } from './home.navigator';
+import {useStore} from 'react-redux';
+import {startAppListening} from '../redux/listenerMiddleware';
+import { userLoggedIn } from '../redux/features/auth/userAuth';
 
-/*
- * Navigation theming: https://reactnavigation.org/docs/en/next/themes.html
- */
 const navigatorTheme = {
   ...DefaultTheme,
   colors: {
@@ -16,40 +14,21 @@ const navigatorTheme = {
   },
 };
 
-/**
- * Subscribes to redux store events
- *
- * @param effect
- * @param type
- * @param deps
- */
-
 export const AppNavigator = (): React.ReactElement => {
   const [isUserLoggedIn, setIsUserLoggedIn] = React.useState(false);
-  const currentValue = useRef(null);
   const store = useStore();
-
-  const handleChange = () => {
-    const state = store.getState();
-    const action = state.action;
-    let previousValue = currentValue.current;
-    currentValue.current = action.type;
-
-    console.log(previousValue);
-    console.log(currentValue);
-    
-    // if (
-    //   previousValue !== action.type &&
-    //   _castArray(type).includes(action.type)
-    // ) {
-    //   effect(action);
-    // }
-  };
+  const state = store.getState();
 
   useEffect(() => {
-    const unsubscribe = store.subscribe(handleChange);
-    return () => unsubscribe();
-  }, []);
+    startAppListening({
+      actionCreator: userLoggedIn,
+      effect: (action, listenerApi) => {
+        // whatever logic you want here
+        console.log(listenerApi.getState());
+        console.log(action);
+      },
+    });
+  }, [state]);
 
   return (
     <NavigationContainer theme={navigatorTheme}>

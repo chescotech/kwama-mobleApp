@@ -1,10 +1,6 @@
-import React, {ReactElement, useReducer} from 'react';
+import React from 'react';
 import {
-  View,
-  TouchableWithoutFeedback,
-  Image,
-  ScrollView,
-  Alert,
+  View
 } from 'react-native';
 import {colors} from '../../../components/config';
 import {
@@ -21,20 +17,17 @@ import PhoneInput from 'react-native-phone-number-input';
 // import PhoneInput from 'react-phone-number-input/react-native-input';
 import moment from 'moment';
 import {Formik} from 'formik';
-import {useDispatch} from 'react-redux';
 import {KeyboardAvoidingView} from './extra/3rd-party';
 import {margin} from '../../../components/config/spacing';
 import Header from '../../../components/header/Header';
 import {validatorRegister} from '../../../helpers/Validators';
 
 import languages from '../../../locales';
-import {customerData} from '../../../redux/reducers/UserReducer';
-import UserDefualts from '../../../redux/reducers/UserReducer';
-import {userTempData} from '../../../redux/actions/authActions';
+
 
 export default (props: any): React.ReactElement => {
   const {navigation} = props;
-
+  
   const t = languages.en;
   const validators = t.validators || {};
   const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false);
@@ -50,13 +43,10 @@ export default (props: any): React.ReactElement => {
   });
   const [formattedValue, setFormattedValue] = React.useState('');
   const phoneInput = React.useRef<PhoneInput>(null);
-
+  
   const now = new Date();
   const min = new Date(1930, 1, 1);
   const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-  const dispatch = useDispatch();
-  // const [state, dispatch] = useReducer(customerData, UserDefualts);
 
   const styles = useStyleSheet(themedStyles);
 
@@ -85,8 +75,6 @@ export default (props: any): React.ReactElement => {
       var allUserData = values;
       allUserData.dob = date;
       allUserData.phone = value;
-
-      dispatch(customerData(allUserData));
 
       navigation && navigation.navigate('PhotoId', {allUserData});
     }

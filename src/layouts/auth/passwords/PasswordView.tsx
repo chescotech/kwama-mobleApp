@@ -11,14 +11,14 @@ import {
   Spinner,
 } from '@ui-kitten/components';
 import {AxiosError} from 'axios';
-import {connect} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {showMessage} from 'react-native-flash-message';
 import {KeyboardAvoidingView} from './extra/3rd-party';
 import apiClient from '../../../services/http-common';
-import {authSelector} from '../../../redux/reducers/auth/selectors'
-import { signInWithEmail } from '../../../redux/reducers/auth/actions';
+import {RootState} from '../../../redux/configureStore';
+import {userLoggedIn} from '../../../redux/features/auth/userAuth';
 
-const PasswordView = (props: any): React.ReactElement => {
+export default (props: any): React.ReactElement => {
   const {navigation} = props;
   const state = navigation.getState();
   const [password, setPassword] = React.useState<string>();
@@ -26,6 +26,8 @@ const PasswordView = (props: any): React.ReactElement => {
   const [confirmPassword, setConfirmPassword] = React.useState<string>();
   const [err, setErr] = React.useState<string>();
   const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false);
+
+  const dispatch = useDispatch();
 
   const LoadingIndicator = (props: any) => (
     <View style={[props.style, styles.indicator]}>
@@ -47,13 +49,28 @@ const PasswordView = (props: any): React.ReactElement => {
         headers: {'Content-Type': 'application/json'},
       })
       .then(response => {
-
         setIsLoading(false);
-        props.dispatch(signInWithEmail(response.data));
-        // dispatch({type: 'user_reducer', payload: response.data});
-        if (response) {
-          navigation && navigation.navigate('home');
-        }
+
+        console.log(response.data);
+
+        dispatch(
+          userLoggedIn({
+            first_name: response.data.userData.first_name,
+            last_name: response.data.userData.first_name,
+            nrc: response.data.userData.first_name,
+            email: response.data.userData.first_name,
+            account: response.data.userData.first_name,
+            phone: response.data.userData.first_name,
+            dob: response.data.userData.first_name,
+            photoUri: response.data.userData.first_name,
+            isLoggedIn: true,
+            accessToken: response.data.accessToken,
+            refreshToken: response.data.refreshToken,
+          }),
+        );
+        // if (response) {
+        //   navigation && navigation.navigate('home');
+        // }
         return response.data;
       })
       .catch((reason: AxiosError) => {
@@ -158,10 +175,3 @@ const themedStyles = StyleService.create({
     alignItems: 'center',
   },
 });
-
-const mapStateToProps = (state: { auth: any; }) => {
-  return {
-    auth: authSelector(state),
-  };
-};
-export default connect(mapStateToProps)(PasswordView);

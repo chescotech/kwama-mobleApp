@@ -12,7 +12,7 @@ import {StatusBar} from '../components/status-bar.component';
 import {AppNavigator} from '../navigation/app.navigator';
 import {AppStorage} from '../services/app-storage.service';
 import {Mapping, Theme, Theming} from '../services/theme.service';
-import configureStore from '../redux/configureStore';
+import {store} from '../redux/configureStore';
 
 const loadingTasks: Task[] = [
   () =>
@@ -52,7 +52,7 @@ const App: React.FC<{mapping: Mapping; theme: Theme}> = ({mapping, theme}) => {
         <ApplicationProvider {...currentMapping} theme={currentTheme}>
           <Theming.MappingContext.Provider value={mappingContext}>
             <Theming.ThemeContext.Provider value={themeContext}>
-              <Provider store={configureStore}>
+              <Provider store={store}>
                 <SafeAreaProvider>
                   <StatusBar />
                   <FlashMessage position="top" />
